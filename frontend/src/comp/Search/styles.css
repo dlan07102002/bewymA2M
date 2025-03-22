@@ -1,0 +1,7 @@
+.search-container{
+    flex: 1;
+    text-align: left;
+    row-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}

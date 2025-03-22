@@ -1,0 +1,40 @@
+.student-form-container {
+    box-shadow: 5px 5px 10px gray;
+    background-color: #ffffff;
+    width: fit-content;
+    padding: 0rem 2rem 2rem 2rem;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: auto;
+    display: none;
+    row-gap: 10px;
+}
+
+.form-title{
+    margin-top: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+    text-transform: uppercase;
+    border-bottom: 3px solid #007bff;
+    display: inline-block;
+}
+
+.visible{
+    display: inline-grid;
+}
+
+.close-btn{
+    font-size: 1.5rem;
+    text-align: right;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover{
+    color: red
+}

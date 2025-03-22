@@ -1,0 +1,11 @@
+.header-action-container {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 10px;
+}
+
+.header-action-container input,
+.header-action-container button {
+    height: 36px; 
+}
+

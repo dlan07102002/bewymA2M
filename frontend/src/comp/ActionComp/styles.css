@@ -1,0 +1,11 @@
+.action{
+    background-color: aliceblue;
+    padding: 10px;
+}
+
+.action-details{
+    gap: 10px;
+    text-align: center;
+    display: inline-flex;
+    justify-content: space-around;
+}
