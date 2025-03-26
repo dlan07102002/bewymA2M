@@ -36,7 +36,7 @@ const StudentForm: React.FC<IStuFormProps> = ({
     });
 
     useEffect(() => {
-        console.log("update student", updateStudent);
+        // console.log("update student", updateStudent);
         setStudent(
             updateStudent ?? {
                 id: 0,

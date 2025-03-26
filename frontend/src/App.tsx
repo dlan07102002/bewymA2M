@@ -1,11 +1,35 @@
 import "./App.css";
-import Table from "./components/Table/Table";
+import { publicRouter } from "./routes";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
     return (
-        <div className="App">
-            <Table />
-        </div>
+        <Router>
+            <Routes>
+                {publicRouter.map((route, index) => (
+                    <Route
+                        path={route.path}
+                        element={route.element}
+                        key={index}
+                    >
+                        {route.children &&
+                            route.children.map((child, childIndex) => (
+                                <Route
+                                    key={childIndex}
+                                    path={child.path}
+                                    element={
+                                        child.Component ? (
+                                            <child.Component />
+                                        ) : (
+                                            child.element
+                                        )
+                                    }
+                                />
+                            ))}
+                    </Route>
+                ))}
+            </Routes>
+        </Router>
     );
 }
 

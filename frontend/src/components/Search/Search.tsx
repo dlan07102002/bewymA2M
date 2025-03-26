@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IStudent } from "../../interface/Interface";
 import { getStudents } from "../../services/StudentAPI";
 import { Button } from "primereact/button";
