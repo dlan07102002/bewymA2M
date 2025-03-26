@@ -4,8 +4,10 @@ import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import "./styles.css";
 import { delStudent } from "../../services/StudentAPI";
-import StuForm from "../StuForm/StuForm";
+import StuForm from "../StudentForm/StudentForm";
 import { IStudent } from "../../interface/Interface";
+import { ConfirmDialog } from "primereact/confirmdialog"; // For <ConfirmDialog /> component
+import { confirmDialog } from "primereact/confirmdialog"; // For confirmDialog method
 
 interface ActionCompProps {
     element: IStudent;
@@ -21,6 +23,18 @@ const ActionComp: React.FC<ActionCompProps> = ({
     const [stuFormVisible, setStuFormVisible] = useState(false);
     const [updateStudent, setUpdateStudent] = useState<IStudent | null>(null);
 
+    // Delete
+    const confirmDelete = () => {
+        confirmDialog({
+            message: "Are you sure you want to proceed?",
+            header: "Confirmation",
+            icon: "pi pi-exclamation-triangle",
+            defaultFocus: "accept",
+            accept: acceptDelete,
+            reject: rejectDelete,
+        });
+    };
+
     const handleDelete = async () => {
         if (element.id === undefined) {
             toast.current?.show({
@@ -32,7 +46,6 @@ const ActionComp: React.FC<ActionCompProps> = ({
 
         try {
             const response = await delStudent(element.id);
-            console.log(response);
             if (response.success) {
                 setStudentList((prevState) =>
                     prevState.filter(
@@ -56,6 +69,27 @@ const ActionComp: React.FC<ActionCompProps> = ({
         }
     };
 
+    const acceptDelete = async () => {
+        toast.current?.show({
+            severity: "info",
+            summary: "Confirmed",
+            detail: "You have accepted",
+            life: 3000,
+        });
+        handleDelete();
+    };
+
+    const rejectDelete = () => {
+        toast.current?.show({
+            severity: "warn",
+            summary: "Rejected",
+            detail: "You have rejected",
+            life: 3000,
+        });
+    };
+
+    // Update
+
     const handleUpdate = () => {
         setStuFormVisible(true);
         setUpdateStudent(element);
@@ -63,26 +97,22 @@ const ActionComp: React.FC<ActionCompProps> = ({
     };
 
     return (
-        <>
+        <div>
             <div style={{ margin: "auto" }}>
-                <Button
-                    label="Action"
-                    icon="pi pi-external-link"
-                    onClick={() => setVisible(true)}
-                />
-
-                <Dialog
-                    className="action"
-                    header="Actions"
-                    visible={visible}
-                    style={{ textAlign: "center" }}
-                    onHide={() => setVisible(false)}
-                >
-                    <div className="action-details">
-                        <Button label="Delete" onClick={handleDelete} />
-                        <Button label="Update" onClick={handleUpdate} />
-                    </div>
-                </Dialog>
+                <div className="action-details">
+                    <Button
+                        label="Update"
+                        onClick={handleUpdate}
+                        severity="info"
+                        size="small"
+                    />
+                    <Button
+                        label="Delete"
+                        onClick={confirmDelete}
+                        severity="danger"
+                        size="small"
+                    />
+                </div>
             </div>
             <StuForm
                 updateStudent={updateStudent}
@@ -91,7 +121,7 @@ const ActionComp: React.FC<ActionCompProps> = ({
                 setVisible={setStuFormVisible}
                 toast={toast}
             />
-        </>
+        </div>
     );
 };
 

@@ -1,10 +1,14 @@
-import { IStudent } from "../interface/Interface";
+import {
+    IGetStudentListResponse,
+    IStudent,
+    IModifiedStudentResponse,
+} from "../interface/Interface";
 
 export async function getStudents(
     key: string = "", // Default to an empty string if no key is provided
     limit: number = 10,
     offset: number = 0
-): Promise<IStudent[]> {
+): Promise<IGetStudentListResponse> {
     try {
         const endpoint = `https://training.atwom.edu.vn/api/public/student/getLst?_keySearch=${encodeURIComponent(
             key
@@ -19,12 +23,11 @@ export async function getStudents(
         }
 
         const data = await response.json();
-        console.log("students:", data);
 
-        return data?.data || [];
+        return { data: data?.data.lst || [], count: data?.data.count };
     } catch (error) {
         console.error("Error fetching students:", error);
-        return [];
+        return { data: [], count: 0 };
     }
 }
 
@@ -32,10 +35,7 @@ export async function addStudent(
     fullName: string,
     dob: string,
     address: string
-): Promise<{
-    success: boolean;
-    data: IStudent | {};
-}> {
+): Promise<IModifiedStudentResponse> {
     const endpoint = `https://training.atwom.edu.vn/api/public/student/save`;
 
     try {
@@ -67,23 +67,21 @@ export async function addStudent(
 }
 
 export async function updateStudent(
+    id: number,
     fullName: string,
     dob: string,
     address: string
-): Promise<{
-    success: boolean;
-    data: IStudent | {};
-}> {
+): Promise<IModifiedStudentResponse> {
     const endpoint = `https://training.atwom.edu.vn/api/public/student/save`;
 
     try {
-        const requestBody = {};
         const response = await fetch(endpoint, {
-            method: "PATCH",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                id: id,
                 fullName: fullName,
                 dob: dob,
                 address: address,
@@ -116,6 +114,5 @@ export async function delStudent(id: number) {
         return null;
     }
 
-    console.log("Student deleted successfully");
     return response.json();
 }

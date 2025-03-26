@@ -6,14 +6,21 @@ import { InputText } from "primereact/inputtext";
 import "./styles.css";
 interface ISearch {
     setStudentList: React.Dispatch<React.SetStateAction<IStudent[]>>;
+    searchKey: string;
+    setSearchKey: React.Dispatch<React.SetStateAction<string>>;
+    setTotalElements: React.Dispatch<React.SetStateAction<number>>;
 }
-const Search: React.FC<ISearch> = ({ setStudentList }) => {
-    const [searchKey, setSearchKey] = useState<string>("");
+const Search: React.FC<ISearch> = ({
+    setStudentList,
+    searchKey,
+    setSearchKey,
+    setTotalElements,
+}) => {
     const handleClick = () => {
         const getStudentList = async () => {
-            const fetchApi = await getStudents(searchKey);
-            console.log(fetchApi);
-            setStudentList(fetchApi);
+            const response = await getStudents(searchKey, 3, 0);
+            setStudentList(response.data);
+            setTotalElements(response.count);
         };
 
         getStudentList();
@@ -28,7 +35,11 @@ const Search: React.FC<ISearch> = ({ setStudentList }) => {
                 style={{ marginRight: "10px" }}
             />
 
-            <Button label="Search" onClick={handleClick} />
+            <Button
+                icon="pi pi-search"
+                severity="secondary"
+                onClick={handleClick}
+            />
         </div>
     );
 };

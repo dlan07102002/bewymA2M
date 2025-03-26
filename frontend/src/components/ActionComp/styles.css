@@ -4,8 +4,7 @@
 }
 
 .action-details{
-    gap: 10px;
     text-align: center;
-    display: inline-flex;
+    display: flex;
     justify-content: space-around;
 }

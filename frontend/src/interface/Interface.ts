@@ -5,3 +5,13 @@ export interface IStudent {
     address: string;
     createDate?: string;
 }
+
+export interface IGetStudentListResponse {
+    data: IStudent[] | [];
+    count: number;
+}
+
+export interface IModifiedStudentResponse {
+    success: boolean;
+    data: IStudent | {};
+}
