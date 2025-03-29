@@ -7,16 +7,18 @@ import "./styles.css";
 
 import Spinner from "../common/Spinner/Spinner";
 import formatDate from "../../utils/DateTimeFormat";
+import { useAppSelector } from "../../store/hook";
 
 interface ITableProps {
     spinner: boolean;
     toast: RefObject<Toast | null>;
-    studentList: IStudent[] | [];
-    setStudentList: React.Dispatch<React.SetStateAction<IStudent[]>>;
 }
 
 const Table: React.FC<ITableProps> = (props) => {
-    const { spinner, toast, studentList, setStudentList } = props;
+    const { spinner, toast } = props;
+
+    const studentState = useAppSelector((state) => state.students);
+    console.log(studentState);
     const renderTableBody = () => {
         if (spinner) {
             return (
@@ -29,9 +31,21 @@ const Table: React.FC<ITableProps> = (props) => {
                 </tbody>
             );
         }
+
+        // Kiểm tra state có tồn tại không
+        if (!studentState || !studentState.data || !studentState.data.lst) {
+            return (
+                <tbody>
+                    <tr>
+                        <td colSpan={6}>No data available</td>
+                    </tr>
+                </tbody>
+            );
+        }
+
         return (
             <tbody>
-                {studentList.map((student) => (
+                {studentState.data.lst.map((student) => (
                     <tr key={student.id}>
                         <td>{student.id}</td>
                         <td>{student.fullName}</td>
@@ -39,11 +53,7 @@ const Table: React.FC<ITableProps> = (props) => {
                         <td>{student.address}</td>
                         <td>{formatDate(student.createDate)}</td>
                         <td>
-                            <ActionComp
-                                element={student}
-                                setStudentList={setStudentList}
-                                toast={toast}
-                            />
+                            <ActionComp element={student} toast={toast} />
                         </td>
                     </tr>
                 ))}

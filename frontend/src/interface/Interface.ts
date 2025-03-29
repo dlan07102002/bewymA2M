@@ -6,9 +6,14 @@ export interface IStudent {
     createDate?: string;
 }
 
-export interface IGetStudentListResponse {
-    data: IStudent[] | [];
+export interface IStudentResponse {
+    success: boolean;
+    data: IGetStudentListDataResponse | string;
+}
+
+export interface IGetStudentListDataResponse {
     count: number;
+    lst: IStudent[];
 }
 
 export interface IModifiedStudentResponse {

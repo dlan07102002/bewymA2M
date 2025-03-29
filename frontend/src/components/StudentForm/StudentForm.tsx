@@ -4,20 +4,19 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { confirmDialog } from "primereact/confirmdialog";
-import { addStudent, updateStudent as update } from "../../services/StudentAPI";
 import { IStudent } from "../../interface/Interface";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { addStudent, updateStudent } from "../../slices/studentSlice";
 
 interface IStuFormProps {
-    updateStudent: IStudent | null;
-    setStudentList: React.Dispatch<React.SetStateAction<IStudent[]>>;
+    targetStudent: IStudent | null;
     visible: boolean;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
     toast: RefObject<Toast | null>;
 }
 
 const StudentForm: React.FC<IStuFormProps> = ({
-    updateStudent,
-    setStudentList,
+    targetStudent,
     visible,
     setVisible,
     toast,
@@ -35,10 +34,13 @@ const StudentForm: React.FC<IStuFormProps> = ({
         address: "",
     });
 
+    const dispatch = useAppDispatch();
+    const studentLst = useAppSelector((state) => state.students);
+
     useEffect(() => {
         // console.log("update student", updateStudent);
         setStudent(
-            updateStudent ?? {
+            targetStudent ?? {
                 id: 0,
                 fullName: "",
                 dob: "",
@@ -47,7 +49,7 @@ const StudentForm: React.FC<IStuFormProps> = ({
             }
         );
         setValidationErrors({ fullName: "", dob: "", address: "" });
-    }, [updateStudent]);
+    }, [targetStudent]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -81,14 +83,16 @@ const StudentForm: React.FC<IStuFormProps> = ({
     const handleAdd = async () => {
         if (!validateForm()) return;
         try {
-            const response = await addStudent(
-                student.fullName,
-                student.dob,
-                student.address
+            dispatch(
+                addStudent({
+                    fullName: student.fullName,
+                    dob: student.dob,
+                    address: student.address,
+                })
             );
-            if (response.success && response.data) {
+            if (studentLst.success && studentLst.data) {
                 showToast("success", "Added successfully");
-                setStudentList((prev) => [...prev, response.data as IStudent]);
+                // setStudentList((prev) => [...prev, response.data as IStudent]);
                 handleCloseForm();
             } else throw new Error("Adding student failed");
         } catch (error: any) {
@@ -99,17 +103,23 @@ const StudentForm: React.FC<IStuFormProps> = ({
     const handleUpdate = async () => {
         if (!validateForm()) return;
         try {
-            const response = await update(
-                student.id!,
-                student.fullName,
-                student.dob,
-                student.address
+            if (!student) {
+                console.error("Student is null or undefined");
+                return;
+            }
+            dispatch(
+                updateStudent({
+                    id: student.id!,
+                    fullName: student.fullName,
+                    dob: student.dob,
+                    address: student.address,
+                })
             );
-            if (response.success && response.data) {
+            if (studentLst.success && studentLst.data) {
                 showToast("success", "Updated successfully");
-                setStudentList((prev) =>
-                    prev.map((s) => (s.id === student.id ? { ...student } : s))
-                );
+                // setStudentList((prev) =>
+                //     prev.map((s) => (s.id === student.id ? { ...student } : s))
+                // );
                 handleCloseForm();
             } else throw new Error("Updating student failed");
         } catch (error: any) {
@@ -129,6 +139,13 @@ const StudentForm: React.FC<IStuFormProps> = ({
 
     const handleSubmit = () => {
         student.id === 0 ? handleAdd() : confirmUpdate();
+        setStudent({
+            id: 0,
+            fullName: "",
+            dob: "",
+            address: "",
+            createDate: "",
+        });
     };
 
     const handleCloseForm = () => {

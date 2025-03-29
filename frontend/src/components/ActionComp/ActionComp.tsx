@@ -3,25 +3,23 @@ import { useState, useRef, RefObject } from "react";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import "./styles.css";
-import { delStudent } from "../../services/StudentAPI";
 import StuForm from "../StudentForm/StudentForm";
 import { IStudent } from "../../interface/Interface";
-import { ConfirmDialog } from "primereact/confirmdialog"; // For <ConfirmDialog /> component
 import { confirmDialog } from "primereact/confirmdialog"; // For confirmDialog method
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { delStudent } from "../../slices/studentSlice";
 
 interface ActionCompProps {
     element: IStudent;
-    setStudentList: React.Dispatch<React.SetStateAction<IStudent[]>>;
+    // setStudentList: React.Dispatch<React.SetStateAction<IStudent[]>>;
     toast: RefObject<Toast | null>;
 }
-const ActionComp: React.FC<ActionCompProps> = ({
-    element,
-    setStudentList,
-    toast,
-}) => {
-    const [visible, setVisible] = useState(false);
+const ActionComp: React.FC<ActionCompProps> = ({ element, toast }) => {
     const [stuFormVisible, setStuFormVisible] = useState(false);
     const [updateStudent, setUpdateStudent] = useState<IStudent | null>(null);
+
+    const studentState = useAppSelector((state) => state.students);
+    const dispatch = useAppDispatch();
 
     // Delete
     const confirmDelete = () => {
@@ -45,13 +43,12 @@ const ActionComp: React.FC<ActionCompProps> = ({
         }
 
         try {
-            const response = await delStudent(element.id);
-            if (response.success) {
-                setStudentList((prevState) =>
-                    prevState.filter(
-                        (student: IStudent) => student.id !== element.id
-                    )
-                );
+            dispatch(
+                delStudent({
+                    id: element.id,
+                })
+            );
+            if (studentState.data) {
                 toast.current?.show({
                     severity: "success",
                     detail: "Deleted successfully",
@@ -65,7 +62,6 @@ const ActionComp: React.FC<ActionCompProps> = ({
                 detail: "Delete failed",
             });
         } finally {
-            setVisible(false);
         }
     };
 
@@ -93,7 +89,6 @@ const ActionComp: React.FC<ActionCompProps> = ({
     const handleUpdate = () => {
         setStuFormVisible(true);
         setUpdateStudent(element);
-        setVisible(false);
     };
 
     return (
@@ -115,8 +110,7 @@ const ActionComp: React.FC<ActionCompProps> = ({
                 </div>
             </div>
             <StuForm
-                updateStudent={updateStudent}
-                setStudentList={setStudentList}
+                targetStudent={element}
                 visible={stuFormVisible}
                 setVisible={setStuFormVisible}
                 toast={toast}
