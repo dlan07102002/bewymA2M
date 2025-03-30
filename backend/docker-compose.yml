@@ -1,0 +1,18 @@
+services:
+    mariadb:
+      image: mariadb:10.6
+      container_name: mariadb_container
+      restart: always
+      environment:
+        MARIADB_ROOT_PASSWORD: 382526
+        MARIADB_DATABASE: student_management
+        MARIADB_USER: duclan
+        MARIADB_PASSWORD: 382526
+      ports:
+        - "3307:3306"
+      volumes:
+        - mariadb_data:/var/lib/mysql
+
+
+volumes:
+  mariadb_data: 
