@@ -2,20 +2,18 @@ package vn.duclan.bewym.service;
 
 import org.springframework.stereotype.Service;
 
-import vn.duclan.bewym.dto.request.StudentCreateRequest;
-import vn.duclan.bewym.mapper.StudentMapper;
+import vn.duclan.bewym.dto.request.StudentSaveRequest;
+import vn.duclan.bewym.dto.response.StudentsResponse;
 import vn.duclan.bewym.models.Student;
-
-import java.util.List;
 
 @Service
 public interface StudentService {
 
-    public List<Student> getAllStudents();
+    public StudentsResponse getStudents(String keySearch, int limit, int offset);
 
-    public Student getStudentById(int id);
+    public Student getStudentById(Long id);
 
-    public Student createStudent(StudentCreateRequest student);
+    public Student saveStudent(StudentSaveRequest student);
 
     public void updateStudent(Student student);
 

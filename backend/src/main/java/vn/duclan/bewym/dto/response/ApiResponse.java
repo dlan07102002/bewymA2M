@@ -7,6 +7,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
+
 public class ApiResponse<T> {
     private boolean success;
     private T data;

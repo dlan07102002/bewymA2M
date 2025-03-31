@@ -1,6 +1,4 @@
-package vn.duclan.bewym.models;
-
-import java.util.Date;
+package vn.duclan.bewym.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,13 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Student {
-    Long id;
-    Date createdAt;
+public class StudentSaveRequest {
+    Long id = 0L;
     String fullName;
     int dob;
     String address;
