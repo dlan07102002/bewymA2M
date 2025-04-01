@@ -124,6 +124,14 @@ const StudentForm: React.FC<IStuFormProps> = ({
             } else throw new Error("Updating student failed");
         } catch (error: any) {
             showToast("error", error.message || "Operation failed");
+        } finally {
+            setStudent({
+                id: 0,
+                fullName: "",
+                dob: "",
+                address: "",
+                createDate: "",
+            });
         }
     };
 
@@ -139,13 +147,6 @@ const StudentForm: React.FC<IStuFormProps> = ({
 
     const handleSubmit = () => {
         student.id === 0 ? handleAdd() : confirmUpdate();
-        setStudent({
-            id: 0,
-            fullName: "",
-            dob: "",
-            address: "",
-            createDate: "",
-        });
     };
 
     const handleCloseForm = () => {

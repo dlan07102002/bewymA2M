@@ -7,6 +7,10 @@ import {
 import axios from "axios";
 
 // Giá trị khởi tạo
+
+const a2mUrl = process.env.REACT_APP_A2M_URL;
+const localUrl = process.env.REACT_APP_LOCAL_URL;
+
 interface StudentState {
     data: IGetStudentListDataResponse;
     success: boolean;
@@ -33,7 +37,7 @@ export const getStudents = createAsyncThunk(
         offset: number;
     }) => {
         const response = await axios.get(
-            `https://training.atwom.edu.vn/api/public/student/getLst`,
+            `${localUrl}/api/public/student/getLst`,
             {
                 params: {
                     _keySearch: key,
@@ -62,7 +66,7 @@ export const addStudent = createAsyncThunk(
     ) => {
         try {
             const response = await axios.post(
-                `https://training.atwom.edu.vn/api/public/student/save`,
+                `${localUrl}/api/public/student/save`,
                 {
                     fullName: fullName,
                     dob: dob,
@@ -80,28 +84,8 @@ export const addStudent = createAsyncThunk(
     }
 );
 
-export const delStudent = createAsyncThunk(
-    "students/delete",
-    async ({ id }: { id: number }, { rejectWithValue }) => {
-        try {
-            const response = await axios.delete(
-                `https://training.atwom.edu.vn/api/public/student/${id}/del`
-            );
-
-            if (!response.data.success) {
-                throw new Error("Failed to delete student");
-            }
-
-            return { id };
-        } catch (error: any) {
-            console.error("Failed to delete student:", error);
-            return rejectWithValue(error.message);
-        }
-    }
-);
-
 export const updateStudent = createAsyncThunk(
-    "students/updateStudent",
+    "students/update",
     async ({
         id,
         fullName,
@@ -114,8 +98,9 @@ export const updateStudent = createAsyncThunk(
         address: string;
     }) => {
         try {
+            console.log(id, fullName, dob, address);
             const response = await axios.post(
-                `https://training.atwom.edu.vn/api/public/student/save`,
+                `${localUrl}/api/public/student/save`,
                 {
                     id: id,
                     fullName: fullName,
@@ -124,10 +109,31 @@ export const updateStudent = createAsyncThunk(
                 }
             );
 
+            console.log("Response: ", response.data);
             return response.data;
         } catch (error) {
             console.error("Failed to update student:", error);
             return null;
+        }
+    }
+);
+
+export const delStudent = createAsyncThunk(
+    "students/delete",
+    async ({ id }: { id: number }, { rejectWithValue }) => {
+        try {
+            const response = await axios.delete(
+                `${localUrl}/api/public/student/${id}/del`
+            );
+
+            if (!response.data.success) {
+                throw new Error("Failed to delete student");
+            }
+
+            return { id };
+        } catch (error: any) {
+            console.error("Failed to delete student:", error);
+            return rejectWithValue(error.message);
         }
     }
 );
@@ -172,6 +178,28 @@ export const studentSlice = createSlice({
                 }
             )
             .addCase(addStudent.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
+            })
+
+            // Update Student
+            .addCase(updateStudent.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(
+                updateStudent.fulfilled,
+                (state, action: PayloadAction<any>) => {
+                    state.loading = false;
+                    state.data.lst = state.data.lst.map((student) => {
+                        if (student.id == action.payload.data.id) {
+                            student = action.payload.data;
+                        }
+                        return student;
+                    });
+                }
+            )
+            .addCase(updateStudent.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             })
