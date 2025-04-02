@@ -11,10 +11,14 @@ import { delStudent } from "../../slices/studentSlice";
 
 interface ActionCompProps {
     element: IStudent;
-    // setStudentList: React.Dispatch<React.SetStateAction<IStudent[]>>;
+    setElement?: React.Dispatch<React.SetStateAction<IStudent | null>>;
     toast: RefObject<Toast | null>;
 }
-const ActionComp: React.FC<ActionCompProps> = ({ element, toast }) => {
+const ActionComp: React.FC<ActionCompProps> = ({
+    element,
+    toast,
+    setElement,
+}) => {
     const [stuFormVisible, setStuFormVisible] = useState(false);
     const [updateStudent, setUpdateStudent] = useState<IStudent | null>(null);
 
@@ -110,7 +114,8 @@ const ActionComp: React.FC<ActionCompProps> = ({ element, toast }) => {
                 </div>
             </div>
             <StuForm
-                targetStudent={element}
+                setElement={setElement}
+                element={element}
                 visible={stuFormVisible}
                 setVisible={setStuFormVisible}
                 toast={toast}

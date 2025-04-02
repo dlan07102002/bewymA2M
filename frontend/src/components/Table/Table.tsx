@@ -8,6 +8,7 @@ import "./styles.css";
 import Spinner from "../common/Spinner/Spinner";
 import formatDate from "../../utils/DateTimeFormat";
 import { useAppSelector } from "../../store/hook";
+import { useNavigate } from "react-router-dom";
 
 interface ITableProps {
     spinner: boolean;
@@ -16,6 +17,7 @@ interface ITableProps {
 
 const Table: React.FC<ITableProps> = (props) => {
     const { spinner, toast } = props;
+    const navigate = useNavigate();
 
     const studentState = useAppSelector((state) => state.students);
     console.log(studentState);
@@ -43,17 +45,28 @@ const Table: React.FC<ITableProps> = (props) => {
             );
         }
 
+        const handleShowStudent = (id: number) => {
+            navigate(`/${id}`);
+        };
+
         return (
             <tbody>
                 {studentState.data.lst.map((student) => (
                     <tr key={student.id}>
-                        <td>{student.id}</td>
-                        <td>{student.fullName}</td>
-                        <td>{student.dob}</td>
-                        <td>{student.address}</td>
-                        <td>{formatDate(student.createDate)}</td>
-                        <td>
-                            <ActionComp element={student} toast={toast} />
+                        <td onClick={() => handleShowStudent(student.id!)}>
+                            {student.id}
+                        </td>
+                        <td onClick={() => handleShowStudent(student.id!)}>
+                            {student.fullName}
+                        </td>
+                        <td onClick={() => handleShowStudent(student.id!)}>
+                            {student.dob}
+                        </td>
+                        <td onClick={() => handleShowStudent(student.id!)}>
+                            {student.address}
+                        </td>
+                        <td onClick={() => handleShowStudent(student.id!)}>
+                            {formatDate(student.createDate)}
                         </td>
                     </tr>
                 ))}
@@ -71,7 +84,6 @@ const Table: React.FC<ITableProps> = (props) => {
                         <th>DOB</th>
                         <th>Address</th>
                         <th>Created Date</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 {renderTableBody()}

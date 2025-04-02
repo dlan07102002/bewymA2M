@@ -1,0 +1,81 @@
+
+  
+
+  .container {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center;     /* Căn giữa theo chiều dọc */
+    height: 100vh;           /* Chiều cao 100% viewport */
+  }
+  /* Styling for the student card */
+  .student-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 350px;
+    padding: 0 20px 20px  20px;
+    transition: all 0.3s ease;
+  }
+
+
+
+  .student-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .student-card-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #5d5d5d;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #ddd; 
+  }
+  
+  .student-card-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 20px  10px;
+    border-bottom: 2px solid #ddd; 
+    margin-bottom: 10px;
+
+  }
+  
+  .student-card-content p {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .student-card-content strong {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .student-card-content span {
+    color: #555;
+    font-weight: 400;
+  }
+  
+  .student-card-content p:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 400px) {
+    .student-card {
+      width: 90%;
+    }
+  
+    .student-card-title {
+      font-size: 20px;
+    }
+  
+    .student-card-content p {
+      font-size: 14px;
+    }
+  }
+  

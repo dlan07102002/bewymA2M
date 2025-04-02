@@ -9,14 +9,16 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { addStudent, updateStudent } from "../../slices/studentSlice";
 
 interface IStuFormProps {
-    targetStudent: IStudent | null;
     visible: boolean;
     setVisible: React.Dispatch<React.SetStateAction<boolean>>;
     toast: RefObject<Toast | null>;
+    element: IStudent | null;
+    setElement?: React.Dispatch<React.SetStateAction<IStudent | null>>;
 }
 
 const StudentForm: React.FC<IStuFormProps> = ({
-    targetStudent,
+    setElement,
+    element,
     visible,
     setVisible,
     toast,
@@ -35,12 +37,11 @@ const StudentForm: React.FC<IStuFormProps> = ({
     });
 
     const dispatch = useAppDispatch();
-    const studentLst = useAppSelector((state) => state.students);
+    const studentState = useAppSelector((state) => state.students);
 
     useEffect(() => {
-        // console.log("update student", updateStudent);
         setStudent(
-            targetStudent ?? {
+            element ?? {
                 id: 0,
                 fullName: "",
                 dob: "",
@@ -49,7 +50,7 @@ const StudentForm: React.FC<IStuFormProps> = ({
             }
         );
         setValidationErrors({ fullName: "", dob: "", address: "" });
-    }, [targetStudent]);
+    }, [element]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -90,9 +91,8 @@ const StudentForm: React.FC<IStuFormProps> = ({
                     address: student.address,
                 })
             );
-            if (studentLst.success && studentLst.data) {
+            if (studentState.success && studentState.data) {
                 showToast("success", "Added successfully");
-                // setStudentList((prev) => [...prev, response.data as IStudent]);
                 handleCloseForm();
             } else throw new Error("Adding student failed");
         } catch (error: any) {
@@ -107,7 +107,7 @@ const StudentForm: React.FC<IStuFormProps> = ({
                 console.error("Student is null or undefined");
                 return;
             }
-            dispatch(
+            const result = await dispatch(
                 updateStudent({
                     id: student.id!,
                     fullName: student.fullName,
@@ -115,23 +115,14 @@ const StudentForm: React.FC<IStuFormProps> = ({
                     address: student.address,
                 })
             );
-            if (studentLst.success && studentLst.data) {
+            if (result.payload.success) {
                 showToast("success", "Updated successfully");
-                // setStudentList((prev) =>
-                //     prev.map((s) => (s.id === student.id ? { ...student } : s))
-                // );
+                // For detail update
+                setElement && setElement(result.payload.data);
                 handleCloseForm();
             } else throw new Error("Updating student failed");
         } catch (error: any) {
             showToast("error", error.message || "Operation failed");
-        } finally {
-            setStudent({
-                id: 0,
-                fullName: "",
-                dob: "",
-                address: "",
-                createDate: "",
-            });
         }
     };
 
@@ -147,6 +138,14 @@ const StudentForm: React.FC<IStuFormProps> = ({
 
     const handleSubmit = () => {
         student.id === 0 ? handleAdd() : confirmUpdate();
+
+        setStudent({
+            id: 0,
+            fullName: "",
+            dob: "",
+            address: "",
+            createDate: "",
+        });
     };
 
     const handleCloseForm = () => {

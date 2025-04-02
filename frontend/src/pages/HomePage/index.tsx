@@ -4,7 +4,6 @@ import StudentForm from "../../components/StudentForm/StudentForm";
 import Pagination from "../../components/common/Pagination/Pagination";
 import Header from "../../components/Header/Header";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { IStudent } from "../../interface/Interface";
 import Table from "../../components/Table/Table";
 import { getStudents } from "../../slices/studentSlice";
 
@@ -55,7 +54,7 @@ const StudentManagement: React.FC = () => {
                 />
             </div>
             <StudentForm
-                targetStudent={null}
+                element={null}
                 visible={visible}
                 setVisible={setVisible}
                 toast={toast}

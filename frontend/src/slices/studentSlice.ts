@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
     IGetStudentListDataResponse,
-    IStudent,
-    IStudentResponse,
+    IStudentDetailResponse,
 } from "../interface/Interface";
 import axios from "axios";
 
@@ -37,7 +36,7 @@ export const getStudents = createAsyncThunk(
         offset: number;
     }) => {
         const response = await axios.get(
-            `${localUrl}/api/public/student/getLst`,
+            `${a2mUrl}/api/public/student/getLst`,
             {
                 params: {
                     _keySearch: key,
@@ -66,7 +65,7 @@ export const addStudent = createAsyncThunk(
     ) => {
         try {
             const response = await axios.post(
-                `${localUrl}/api/public/student/save`,
+                `${a2mUrl}/api/public/student/save`,
                 {
                     fullName: fullName,
                     dob: dob,
@@ -100,7 +99,7 @@ export const updateStudent = createAsyncThunk(
         try {
             console.log(id, fullName, dob, address);
             const response = await axios.post(
-                `${localUrl}/api/public/student/save`,
+                `${a2mUrl}/api/public/student/save`,
                 {
                     id: id,
                     fullName: fullName,
@@ -123,7 +122,7 @@ export const delStudent = createAsyncThunk(
     async ({ id }: { id: number }, { rejectWithValue }) => {
         try {
             const response = await axios.delete(
-                `${localUrl}/api/public/student/${id}/del`
+                `${a2mUrl}/api/public/student/${id}/del`
             );
 
             if (!response.data.success) {
@@ -189,7 +188,7 @@ export const studentSlice = createSlice({
             })
             .addCase(
                 updateStudent.fulfilled,
-                (state, action: PayloadAction<any>) => {
+                (state, action: PayloadAction<IStudentDetailResponse>) => {
                     state.loading = false;
                     state.data.lst = state.data.lst.map((student) => {
                         if (student.id == action.payload.data.id) {
